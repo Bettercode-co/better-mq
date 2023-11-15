@@ -1,4 +1,4 @@
-
+use std::time::{UNIX_EPOCH, SystemTime};
 
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -19,9 +19,18 @@ impl Header {
     pub fn new(time: u128, message_type: MessageType) -> Header {
         Header { time, message_type }
     }
+
+    pub fn new_current_time(message_type: MessageType) -> Header {
+        let current_time: u128 = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+
+        Header { time: current_time, message_type }
+    }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Message {
     header: Header,
     topic: String,
@@ -32,6 +41,15 @@ impl Message {
     pub fn new(header: Header, data: &str, topic: &str) -> Message {
         Message { header, data: data.to_string(), topic: topic.to_string() }
     }
+
+    pub fn get_data(&self) -> &str {
+        &self.data
+    }
+
+    pub fn get_header(&self) -> Header {
+        self.header
+    }
+
 }
 
 
