@@ -4,7 +4,8 @@
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MessageType {
     Consume,
-    Produce
+    Produce,
+    Response,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -23,12 +24,13 @@ impl Header {
 #[derive(Debug, PartialEq, Eq)]
 pub struct Message {
     header: Header,
+    topic: String,
     data: String, // slice of bytes
 }
 
 impl Message {
-    pub fn new(header: Header, data: &str) -> Message {
-        Message { header, data: data.to_string() }
+    pub fn new(header: Header, data: &str, topic: &str) -> Message {
+        Message { header, data: data.to_string(), topic: topic.to_string() }
     }
 }
 
@@ -51,10 +53,12 @@ pub mod tests {
 
         let header: Header = Header::new(current_time, MessageType::Produce);
         let data: &str = "{'mamad': 10}";
+        let topic: &str = "chat1";
 
-        let message: Message = Message::new(header.clone(), "{'mamad': 10}");
+        let message: Message = Message::new(header.clone(), data, topic);
 
         assert_eq!(message.header, header);
         assert_eq!(message.data, data.to_string());
+        assert_eq!(message.topic, topic.to_string());
     }
 }
